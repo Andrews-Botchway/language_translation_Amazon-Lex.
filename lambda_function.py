@@ -39,11 +39,11 @@ def lambda_handler(event, context):
         lex_response = {
             "sessionState": {
               "dialogAction": {
-                  "type" : "Close"
+                  "type": "Close"
               },
-              "intent" : {
-                "name" : "TranslateIntent", #Add your Intent Name
-                "state" : "Fulfilled"
+              "intent": {
+                "name": "TranslateIntent", #Add your Intent Name
+                "state": "Fulfilled"
               }
             },
             "messages": [
@@ -64,11 +64,11 @@ def lambda_handler(event, context):
         lex_error_response = {
             "sessionState": {
               "dialogAction": {
-                  "type" : "Close"
+                  "type": "Close"
               },
-              "intent" : {
+              "intent": {
                 "name" : "TranslateIntent",
-                "state" : "Fulfilled"
+                "state": "Fulfilled"
               }
             },
             "messages": [
