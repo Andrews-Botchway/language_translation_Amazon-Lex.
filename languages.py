@@ -1,82 +1,104 @@
-import boto3
-import json
-from languages import language_codes  # Import the language codes from languages.py
+# languages.py
 
-def lambda_handler(event, context):
-    try:
-        # Debug log: Print the entire Lex event first
-        print("EVENT:", json.dumps(event))
-
-        # Extract input text and selected language from Lex slots
-        input_text = event['sessionState']['intent']['slots']['text']['value']['interpretedValue'].strip()
-        language_slot = event['sessionState']['intent']['slots']['language']['value']['interpretedValue']
-
-        # Validate input
-        if not input_text:
-            raise ValueError("Input text is empty.")
-
-        # Validate language
-        if language_slot not in language_codes:
-            raise ValueError(f"Unsupported language: {language_slot}")
-
-        # Get the target language code
-        target_language_code = language_codes[language_slot]
-
-        
-        # Initialize the Amazon Translate client
-        translate_client = boto3.client('translate')
-
-        # Call Amazon Translate to perform translation
-        response = translate_client.translate_text(
-            Text=input_text,
-            SourceLanguageCode='en',  # English input
-            TargetLanguageCode=target_language_code
-        )
-
-        translated_text = response['TranslatedText']
-
-        # Success response to Lex
-        lex_response = {
-            "sessionState": {
-              "dialogAction": {
-                  "type" : "Close"
-              },
-              "intent" : {
-                "name" : "TranslateIntent", #Add your Intent Name
-                "state" : "Fulfilled"
-              }
-            },
-            "messages": [
-                {
-                    "contentType": "PlainText",
-                    "content": translated_text
-                }
-            ]
-        }
-
-        return lex_response
-
-    except Exception as error:
-        error_message = "Lambda execution error: " + str(error)
-        print(error_message)
-
-        # Error response to Lex
-        lex_error_response = {
-            "sessionState": {
-              "dialogAction": {
-                  "type" : "Close"
-              },
-              "intent" : {
-                "name" : "TranslateIntent",
-                "state" : "Fulfilled"
-              }
-            },
-            "messages": [
-                {
-                    "contentType": "PlainText",
-                    "content": error_message
-                }
-            ]
-        }
-
-        return lex_error_response
+# A comprehensive list of languages with ISO 639-1 codes
+language_codes = {
+    'Afrikaans': 'af',
+    'Albanian': 'sq',
+    'Amharic': 'am',
+    'Arabic': 'ar',
+    'Armenian': 'hy',
+    'Azerbaijani': 'az',
+    'Basque': 'eu',
+    'Belarusian': 'be',
+    'Bengali': 'bn',
+    'Bosnian': 'bs',
+    'Bulgarian': 'bg',
+    'Burmese': 'my',
+    'Catalan': 'ca',
+    'Chinese (Simplified)': 'zh',
+    'Chinese (Traditional)': 'zh-TW',
+    'Croatian': 'hr',
+    'Czech': 'cs',
+    'Danish': 'da',
+    'Dutch': 'nl',
+    'English': 'en',
+    'Estonian': 'et',
+    'Filipino': 'tl',
+    'Finnish': 'fi',
+    'French': 'fr',
+    'Galician': 'gl',
+    'Georgian': 'ka',
+    'German': 'de',
+    'Greek': 'el',
+    'Gujarati': 'gu',
+    'Haitian Creole': 'ht',
+    'Hausa': 'ha',
+    'Hebrew': 'he',
+    'Hindi': 'hi',
+    'Hungarian': 'hu',
+    'Icelandic': 'is',
+    'Igbo': 'ig',
+    'Indonesian': 'id',
+    'Irish': 'ga',
+    'Italian': 'it',
+    'Japanese': 'ja',
+    'Javanese': 'jv',
+    'Kannada': 'kn',
+    'Kazakh': 'kk',
+    'Khmer': 'km',
+    'Korean': 'ko',
+    'Kurdish': 'ku',
+    'Kyrgyz': 'ky',
+    'Lao': 'lo',
+    'Latvian': 'lv',
+    'Lithuanian': 'lt',
+    'Luxembourgish': 'lb',
+    'Macedonian': 'mk',
+    'Malagasy': 'mg',
+    'Malay': 'ms',
+    'Malayalam': 'ml',
+    'Maltese': 'mt',
+    'Maori': 'mi',
+    'Marathi': 'mr',
+    'Mongolian': 'mn',
+    'Nepali': 'ne',
+    'Norwegian': 'no',
+    'Odia (Oriya)': 'or',
+    'Pashto': 'ps',
+    'Persian (Farsi)': 'fa',
+    'Polish': 'pl',
+    'Portuguese': 'pt',
+    'Punjabi': 'pa',
+    'Romanian': 'ro',
+    'Russian': 'ru',
+    'Samoan': 'sm',
+    'Serbian': 'sr',
+    'Sesotho': 'st',
+    'Shona': 'sn',
+    'Sindhi': 'sd',
+    'Sinhala': 'si',
+    'Slovak': 'sk',
+    'Slovenian': 'sl',
+    'Somali': 'so',
+    'Spanish': 'es',
+    'Sundanese': 'su',
+    'Swahili': 'sw',
+    'Swedish': 'sv',
+    'Tajik': 'tg',
+    'Tamil': 'ta',
+    'Tatar': 'tt',
+    'Telugu': 'te',
+    'Thai': 'th',
+    'Turkish': 'tr',
+    'Turkmen': 'tk',
+    'Ukrainian': 'uk',
+    'Urdu': 'ur',
+    'Uyghur': 'ug',
+    'Uzbek': 'uz',
+    'Vietnamese': 'vi',
+    'Welsh': 'cy',
+    'Xhosa': 'xh',
+    'Yiddish': 'yi',
+    'Yoruba': 'yo',
+    'Zulu': 'zu'
+}
