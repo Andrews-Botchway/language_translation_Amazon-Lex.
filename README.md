@@ -41,3 +41,5 @@ This is what your project will look like, once built:
 
 ![alt text](chat_bot.png)
 
+Project outine in project.md
+
